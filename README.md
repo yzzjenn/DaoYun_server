@@ -13,7 +13,7 @@ springboot Jpa
 
 sawgger-ui文档地址
 
-http://49.232.29.120:8000/swagger-ui.html
+http://121.4.16.48:8000/swagger-ui.html
 
 
 # 延伸阅读
