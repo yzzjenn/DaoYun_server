@@ -1,12 +1,14 @@
 # 到云工程简介
 
-相关技术
+技术
 
 springboot 2.1.0
 
 swagger 2.9.2
 
 springboot Jpa
+
+redis
 
 
 
