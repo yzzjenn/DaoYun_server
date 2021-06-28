@@ -3,6 +3,7 @@ server:
 
 spring:
   freemarker:
+    suffix: .ftl
     check-template-location: false
   profiles:
     active: prod
@@ -64,7 +65,8 @@ smms:
 
 email:
   host: smtp.163.com
-  pass: GLKTJULVSQVMHBVE
+  pass: SYJGAIYRRCIRUCZW
   port: 465
-  fromUser: 156923478@163.com
-  user: 到云签到
+  fromUser: yangzizhencn@163.com
+  user: 到云
+
