@@ -12,8 +12,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
 @Table(name = "sys_job")
 public class Job extends BaseEntity implements Serializable {
     @Id
@@ -50,5 +48,37 @@ public class Job extends BaseEntity implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getJobSort() {
+        return jobSort;
+    }
+
+    public void setJobSort(Long jobSort) {
+        this.jobSort = jobSort;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

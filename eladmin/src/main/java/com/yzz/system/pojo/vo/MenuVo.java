@@ -1,6 +1,7 @@
 package com.yzz.system.pojo.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.yzz.base.BaseEntity;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.List;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class MenuVo implements Serializable {
+public class MenuVo extends BaseEntity implements Serializable  {
 
     private String name;
 

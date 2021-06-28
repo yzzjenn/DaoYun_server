@@ -25,6 +25,9 @@ public class UserQueryCriteria  implements Serializable {
 
     private Long deptId;
 
+    @Query
+    private String username;
+
     @Query(type = Query.Type.BETWEEN)
     private List<Timestamp> createTime;
 
@@ -74,5 +77,13 @@ public class UserQueryCriteria  implements Serializable {
 
     public void setCreateTime(List<Timestamp> createTime) {
         this.createTime = createTime;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

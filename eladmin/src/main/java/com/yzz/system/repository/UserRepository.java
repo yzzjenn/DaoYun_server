@@ -1,6 +1,7 @@
 package com.yzz.system.repository;
 
 
+import com.yzz.system.pojo.Dict;
 import com.yzz.system.pojo.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

@@ -17,9 +17,9 @@ import java.util.Set;
 @Table(name = "sys_role")
 @NoArgsConstructor
 public class Role extends BaseEntity implements Serializable {
-//    public Role(Long id) {
-//        this.id = id;
-//    }
+    public Role(Long id) {
+        this.id = id;
+    }
 
     @Id
     @Column(name = "role_id")
