@@ -1,0 +1,6 @@
+0    DEBUG [2021-04-27 14:36:03]  Couldn't find template in cache for "email.ftl"("zh_CN", UTF-8, parsed); will try to load it.
+3    DEBUG [2021-04-27 14:36:03]  TemplateLoader.findTemplateSource("email.ftl"): Found
+4    DEBUG [2021-04-27 14:36:03]  Loading template for "email.ftl"("zh_CN", UTF-8, parsed) from "file:/C:/Users/Yzz/Desktop/%e7%a0%94%e7%a9%b6%e7%94%9f/daoyun_eladmin/eladmin/target/classes/templates/email.ftl"
+233656 DEBUG [2021-04-27 14:39:57]  Couldn't find template in cache for "email.ftl"("zh_CN", UTF-8, parsed); will try to load it.
+233657 DEBUG [2021-04-27 14:39:57]  TemplateLoader.findTemplateSource("email.ftl"): Found
+233659 DEBUG [2021-04-27 14:39:57]  Loading template for "email.ftl"("zh_CN", UTF-8, parsed) from "file:/C:/Users/Yzz/Desktop/%e7%a0%94%e7%a9%b6%e7%94%9f/daoyun_eladmin/eladmin/target/classes/templates/email.ftl"
