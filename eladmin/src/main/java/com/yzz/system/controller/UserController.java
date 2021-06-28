@@ -17,6 +17,7 @@ import com.yzz.system.pojo.vo.UserPassVo;
 import com.yzz.system.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +43,7 @@ import java.util.stream.Collectors;
 @Api(tags = "用户管理")
 @RestController   // 以restful风格返回数据的controller注释
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
@@ -50,16 +52,6 @@ public class UserController {
     private final RoleService roleService;
     private final VerifyService verificationCodeService;
     private final EmailService emailService;   // EmailService用于邮箱发送验证信息
-
-    public UserController(PasswordEncoder passwordEncoder, UserService userService, DataService dataService, DeptService deptService, RoleService roleService, VerifyService verificationCodeService, EmailService emailService) {
-        this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
-        this.dataService = dataService;
-        this.deptService = deptService;
-        this.roleService = roleService;
-        this.verificationCodeService = verificationCodeService;
-        this.emailService = emailService;
-    }
 
     @ApiOperation("查询用户")
     @GetMapping
@@ -74,6 +66,26 @@ public class UserController {
         List<Long> dataScopes = dataService.getDeptIds(userService.findByName(SecurityUtils.getCurrentUsername()));
         // criteria.getDeptIds() 不为空并且数据权限不为空则取交集
         if (!CollectionUtils.isEmpty(criteria.getDeptIds()) && !CollectionUtils.isEmpty(dataScopes)) {
+            // 取交集
+            criteria.getDeptIds().retainAll(dataScopes);
+            if (!CollectionUtil.isEmpty(criteria.getDeptIds())) {
+                return new ResponseEntity<>(userService.queryAll(criteria, pageable), HttpStatus.OK);
+            }
+        } else {
+            // 否则取并集
+            criteria.getDeptIds().addAll(dataScopes);
+            return new ResponseEntity<>(userService.queryAll(criteria, pageable), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(PageUtil.toPage(null, 0), HttpStatus.OK);
+    }
+
+    @ApiOperation("根据昵称或者账号查询用户")
+    @GetMapping(value = "/search")
+    @AnonymousAccess
+    public ResponseEntity<Object> queryByName(UserQueryCriteria criteria, Pageable pageable) {
+        // 数据权限
+        List<Long> dataScopes = dataService.getDeptIds(userService.findByName(SecurityUtils.getCurrentUsername()));
+        if (!ObjectUtils.isEmpty(criteria.getUsername()) && !CollectionUtils.isEmpty(dataScopes)) {
             // 取交集
             criteria.getDeptIds().retainAll(dataScopes);
             if (!CollectionUtil.isEmpty(criteria.getDeptIds())) {

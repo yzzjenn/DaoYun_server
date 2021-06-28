@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.yzz.util.RedisUtils;
 
 import java.util.Collections;
+
 @Service
 @RequiredArgsConstructor
 public class VerifyServiceImpl implements VerifyService {
@@ -32,21 +33,22 @@ public class VerifyServiceImpl implements VerifyService {
         String redisKey = key + email;
         // 如果不存在有效的验证码，就创建一个新的
         TemplateEngine engine = TemplateUtil.createEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
-        Template template = engine.getTemplate("email/email.ftl");
+        Template template = engine.getTemplate("email.ftl");
         Object oldCode = redisUtils.get(redisKey);
+
         if (oldCode == null) {
             String code = RandomUtil.randomNumbers(6);
+            System.out.println(code);
             // 存入缓存
             if (!redisUtils.set(redisKey, code, expiration)) {
                 throw new BadRequestException("服务异常，请联系网站负责人");
             }
             content = template.render(Dict.create().set("code", code));
-            emailVo = new EmailVo(Collections.singletonList(email), "到云后台管理系统", content);
             // 存在就再次发送原来的验证码
         } else {
             content = template.render(Dict.create().set("code", oldCode));
-            emailVo = new EmailVo(Collections.singletonList(email), "到云后台管理系统", content);
         }
+        emailVo = new EmailVo(Collections.singletonList(email), "到云后台管理系统", content);
         return emailVo;
     }
 
@@ -54,7 +56,7 @@ public class VerifyServiceImpl implements VerifyService {
     public void validated(String key, String code) {
         Object value = redisUtils.get(key);
         if (value == null || !value.toString().equals(code)) {
-            throw new BadRequestException("无效验证码");
+            throw new BadRequestException("验证码错误");
         } else {
             redisUtils.del(key);
         }

@@ -8,6 +8,8 @@ import com.yzz.exception.BadRequestException;
 import com.yzz.system.pojo.vo.EmailVo;
 import com.yzz.system.repository.EmailRepository;
 import com.yzz.system.service.EmailService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,19 +20,18 @@ import com.yzz.util.SpringContextHolder;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@CacheConfig(cacheNames = "email")
 public class EmailServiceImpl implements EmailService {
     private final EmailRepository emailRepository;
 
-    public EmailServiceImpl(EmailRepository emailRepository) {
-        this.emailRepository = emailRepository;
-    }
 
     @Override
-    @CachePut(key = "'id:1'")
+    @CachePut(key = "'config'")
     @Transactional(rollbackFor = Exception.class)
     public EmailConfig config(EmailConfig emailConfig, EmailConfig old) throws Exception {
         emailConfig.setId(1L);
-        if (!emailConfig.getPass().equals(old.getPass())) {
+        if(!emailConfig.getPass().equals(old.getPass())){
             // 对称加密
             emailConfig.setPass(EncryptUtils.desEncrypt(emailConfig.getPass()));
         }
@@ -38,7 +39,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    @Cacheable(key = "'id:1'")
+    @Cacheable(key = "'config'")
     public EmailConfig find() {
         Optional<EmailConfig> emailConfig = emailRepository.findById(1L);
         return emailConfig.orElseGet(EmailConfig::new);
@@ -46,12 +47,13 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void send(EmailVo emailVo, EmailConfig emailConfig) {
-        if (emailConfig == null) {
+    public void send(EmailVo emailVo, EmailConfig emailConfig){
+        if(emailConfig.getId() == null){
             throw new BadRequestException("请先配置，再操作");
         }
         // 封装
         MailAccount account = new MailAccount();
+        account.setUser(emailConfig.getUser());
         account.setHost(emailConfig.getHost());
         account.setPort(Integer.parseInt(emailConfig.getPort()));
         account.setAuth(true);
@@ -61,7 +63,7 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
-        account.setFrom(emailConfig.getUser() + "<" + emailConfig.getFromUser() + ">");
+        account.setFrom(emailConfig.getUser()+"<"+emailConfig.getFromUser()+">");
         // ssl方式发送
         account.setSslEnable(true);
         // 使用STARTTLS安全连接
@@ -78,7 +80,7 @@ public class EmailServiceImpl implements EmailService {
                     //关闭session
                     .setUseGlobalSession(false)
                     .send();
-        } catch (Exception e) {
+        }catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -90,6 +92,7 @@ public class EmailServiceImpl implements EmailService {
     @Transactional(rollbackFor = Exception.class)
     public void send(EmailVo emailVo) {
         EmailConfigProperties properties = SpringContextHolder.getBean(EmailConfigProperties.class);
+        System.out.println(properties);
         MailAccount account = new MailAccount();
         account.setHost(properties.getHost());
         account.setPort(Integer.parseInt(properties.getPort()));
@@ -99,6 +102,7 @@ public class EmailServiceImpl implements EmailService {
         // ssl方式发送
         account.setSslEnable(true);
         String content = emailVo.getContent();
+
         // 发送
         try {
             int size = emailVo.getTos().size();

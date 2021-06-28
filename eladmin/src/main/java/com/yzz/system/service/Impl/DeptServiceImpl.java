@@ -39,8 +39,6 @@ public class DeptServiceImpl implements DeptService {
     private final RoleRepository roleRepository;
 //    private final CourseRepository courseRepository;
 
-
-
     @Override
     public List<DeptDto> queryAll(DeptQueryCriteria criteria, Boolean isQuery) throws Exception {
         Sort sort = new Sort(Sort.Direction.ASC, "deptSort");
@@ -178,7 +176,7 @@ public class DeptServiceImpl implements DeptService {
     @Override
     public List<DeptDto> getSuperior(DeptDto deptDto, List<Dept> depts) {
         if (deptDto.getPid() == null) {
-            depts.addAll(deptRepository.findByPidIsNull());
+            //depts.addAll(deptRepository.findByPidIsNull());
             return deptMapper.toDto(depts);
         }
         depts.addAll(deptRepository.findByPid(deptDto.getPid()));
